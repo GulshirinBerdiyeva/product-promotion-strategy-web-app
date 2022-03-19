@@ -1,11 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { UserRole } from './userRole';
+import { Document, Types } from 'mongoose';
+import { UserRole } from './type/userRole.type';
 
 export type UserDocument = User & Document;
 
 @Schema()
 export class User {
+
+  @Prop({
+    type: Types.ObjectId,
+    unique: true
+  })
+  id: Types.ObjectId;
+
   @Prop({ required: true })
   firstName: string;
 
@@ -18,16 +25,26 @@ export class User {
   @Prop({ required: true })
   age: number;
 
+  @Prop({ required: true })
+  password: string;
+
+  @Prop()
+  refreshTokenHash: string;
+
   @Prop({
     required: true,
     enum: Object.values(UserRole),
   })
   role: string;
 
-  @Prop()
+  @Prop({
+    // unique: true
+  })
   email: string;
 
-  @Prop()
+  @Prop({
+    // unique: true
+  })
   socialMediaUrl: string;
 
   @Prop()
@@ -35,12 +52,6 @@ export class User {
 
   @Prop()
   photoFileName: string;
-
-  @Prop({ required: true })
-  password: string;
-
-  @Prop()
-  token: string;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserModel = SchemaFactory.createForClass(User);

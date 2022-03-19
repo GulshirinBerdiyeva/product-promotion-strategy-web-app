@@ -2,12 +2,13 @@ import { IsBoolean, IsMongoId } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class LikesDto {
+
   @IsBoolean()
   readonly liked: boolean;
 
   @IsMongoId()
-  readonly userID: Types.ObjectId;
+  readonly userId: Types.ObjectId;
 
   @IsMongoId()
-  readonly postID: Types.ObjectId;
+  readonly postId: Types.ObjectId;
 }

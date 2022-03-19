@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { PostService } from '../services/post.service';
+import { PostService } from '../service/post.service';
 import { PostDto } from '../dto/post.dto';
-import * as schema from '../models/post.schema';
+import * as schema from '../model/post.model';
 
 @Controller('posts')
 export class PostController {
+
   constructor(private readonly postService: PostService) {}
 
   @Post()
@@ -19,7 +20,7 @@ export class PostController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<schema.Post> {
-    return this.postService.findOne(id);
+    return this.postService.findOneById(id);
   }
 
   @Delete(':id')

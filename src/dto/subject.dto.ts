@@ -1,6 +1,7 @@
 import { IsNotEmpty, MaxLength } from 'class-validator';
 
-export class ContentTheme {
+export class SubjectDto {
+
   @IsNotEmpty()
   @MaxLength(50)
   readonly title: string;

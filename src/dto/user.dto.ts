@@ -1,15 +1,8 @@
-import {
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  Length,
-  MaxLength,
-  Min,
-} from 'class-validator';
-import { UserRole } from '../models/userRole';
+import { IsEmail, IsEnum, IsNotEmpty, IsNumber, Length, MaxLength, Min } from 'class-validator';
+import { UserRole } from '../model/type/userRole.type';
 
 export class UserDto {
+
   @IsNotEmpty()
   @MaxLength(25)
   readonly firstName: string;
@@ -26,6 +19,12 @@ export class UserDto {
   @Min(0)
   readonly age: number;
 
+  @IsNotEmpty()
+  @Length(5, 10)
+  password: string;
+
+  refreshTokenHash: string;
+
   @IsEnum(UserRole)
   readonly role: string;
 
@@ -39,10 +38,4 @@ export class UserDto {
   readonly responseCounter: number;
 
   readonly photoFileName: string;
-
-  @IsNotEmpty()
-  @Length(5, 10)
-  readonly password: string;
-
-  readonly token: string;
 }

@@ -5,6 +5,13 @@ export type LikesDocument = Likes & Document;
 
 @Schema()
 export class Likes {
+
+  @Prop({
+    type: Types.ObjectId,
+    unique: true
+  })
+  id: Types.ObjectId;
+
   @Prop({ default: false })
   liked: boolean;
 
@@ -13,14 +20,14 @@ export class Likes {
     ref: 'User',
     required: true,
   })
-  userID: Types.ObjectId;
+  userId: Types.ObjectId;
 
   @Prop({
     type: Types.ObjectId,
     ref: 'Post',
     required: true,
   })
-  postID: Types.ObjectId;
+  postId: Types.ObjectId;
 }
 
-export const LikesSchema = SchemaFactory.createForClass(Likes);
+export const LikesModel = SchemaFactory.createForClass(Likes);

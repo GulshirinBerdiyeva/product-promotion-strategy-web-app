@@ -5,6 +5,13 @@ export type PostDocument = Post & Document;
 
 @Schema()
 export class Post {
+
+  @Prop({
+    type: Types.ObjectId,
+    unique: true
+  })
+  id: Types.ObjectId;
+
   @Prop({ required: true })
   title: string;
 
@@ -22,14 +29,14 @@ export class Post {
     ref: 'User',
     required: true,
   })
-  userID: Types.ObjectId;
+  userId: Types.ObjectId;
 
   @Prop({
     type: Types.ObjectId,
-    ref: 'ContentTheme',
+    ref: 'Subject',
     required: true,
   })
-  contentThemeID: Types.ObjectId;
+  subjectId: Types.ObjectId;
 }
 
-export const PostSchema = SchemaFactory.createForClass(Post);
+export const PostModel = SchemaFactory.createForClass(Post);

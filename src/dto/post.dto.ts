@@ -2,6 +2,7 @@ import { IsDate, IsMongoId, IsNotEmpty, MaxLength } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class PostDto {
+
   @IsNotEmpty()
   @MaxLength(50)
   readonly title: string;
@@ -16,8 +17,8 @@ export class PostDto {
   readonly date: Date;
 
   @IsMongoId()
-  readonly userID: Types.ObjectId;
+  readonly userId: Types.ObjectId;
 
   @IsMongoId()
-  readonly contentThemID: Types.ObjectId;
+  readonly subjectId: Types.ObjectId;
 }

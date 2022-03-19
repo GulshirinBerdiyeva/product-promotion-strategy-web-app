@@ -2,6 +2,7 @@ import { IsBoolean, IsDate, IsMongoId, IsNotEmpty } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class CommentDto {
+
   @IsNotEmpty()
   readonly comment: string;
 
@@ -12,8 +13,8 @@ export class CommentDto {
   readonly date: Date;
 
   @IsMongoId()
-  readonly userID: Types.ObjectId;
+  readonly userId: Types.ObjectId;
 
   @IsMongoId()
-  readonly postID: Types.ObjectId;
+  readonly postId: Types.ObjectId;
 }

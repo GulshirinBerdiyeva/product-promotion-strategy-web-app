@@ -5,6 +5,13 @@ export type CommentDocument = Comment & Document;
 
 @Schema()
 export class Comment {
+
+  @Prop({
+    type: Types.ObjectId,
+    unique: true
+  })
+  id: Types.ObjectId;
+
   @Prop({ required: true })
   comment: string;
 
@@ -19,14 +26,14 @@ export class Comment {
     ref: 'User',
     required: true,
   })
-  userID: Types.ObjectId;
+  userId: Types.ObjectId;
 
   @Prop({
     type: Types.ObjectId,
     ref: 'Post',
     required: true,
   })
-  postID: Types.ObjectId;
+  postId: Types.ObjectId;
 }
 
-export const CommentSchema = SchemaFactory.createForClass(Comment);
+export const CommentModel = SchemaFactory.createForClass(Comment);
