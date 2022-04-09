@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { Types } from "mongoose";
-import { CommentService } from "../service/comment.service";
-import { CommentDto } from "../dto/comment.dto";
-import { Comment } from "../model/comment.model";
+import {Body, Controller, Delete, Get, Param, Post} from '@nestjs/common';
+import {CommentService} from "../service/comment.service";
+import {CommentDto} from "../dto/request/comment.dto";
+import {Comment} from "../model/comment.model";
+import {CommentReplyDto} from "../dto/request/comment.reply.dto";
 
 @Controller('comments')
 export class CommentController {
@@ -10,22 +10,27 @@ export class CommentController {
     constructor(private readonly commentService: CommentService) {}
 
     @Post()
-    async create(@Body() commentDto: CommentDto): Promise<Comment> {
-        return await this.commentService.create(commentDto);
+    async createComment(@Body() commentDto: CommentDto) {
+        await this.commentService.createComment(commentDto);
     }
 
-    @Get()
-    async findAll(): Promise<Comment[]> {
-        return this.commentService.findAll();
+    @Post()
+    async replyOnComment(@Body() commentReplyDto: CommentReplyDto) {
+        await this.commentService.replyOnComment(commentReplyDto);
     }
 
-    @Get(':id')
-    async findOne(@Param('id') id: Types.ObjectId): Promise<Comment> {
-        return this.commentService.findOneById(id);
-    }
-
-    @Delete(':id')
-    async delete(@Param('id') id: Types.ObjectId) {
-        return this.commentService.delete(id);
-    }
+    // @Get()
+    // async findAll(): Promise<Comment[]> {
+    //     return this.commentService.findAll();
+    // }
+    //
+    // @Get(':id')
+    // async findOne(@Param('id') id: string): Promise<Comment> {
+    //     return this.commentService.findOneById(id);
+    // }
+    //
+    // @Delete(':id')
+    // async delete(@Param('id') id: string) {
+    //     return this.commentService.delete(id);
+    // }
 }

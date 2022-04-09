@@ -1,5 +1,5 @@
-import { IsBoolean, IsDate, IsMongoId, IsNotEmpty } from 'class-validator';
-import { Types } from 'mongoose';
+import {IsBoolean, IsDate, IsMongoId, IsNotEmpty} from 'class-validator';
+import {Types} from 'mongoose';
 
 export class CommentDto {
 

@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, UploadedFiles, UseInterceptors} from '@nestjs/common';
 import { PostService } from '../service/post.service';
-import { PostDto } from '../dto/post.dto';
-import * as schema from '../model/post.model';
+import { PostDto } from '../dto/request/post.dto';
+import {FilesInterceptor} from "@nestjs/platform-express";
+import {SubjectDto} from "../dto/request/subject.dto";
+import * as schema from "../model/post.model";
 
 @Controller('posts')
 export class PostController {
@@ -9,22 +11,29 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
-  async create(@Body() postDto: PostDto): Promise<schema.Post> {
-    return await this.postService.create(postDto);
+  @UseInterceptors(FilesInterceptor('files'))
+  async publishPost(@Body() postDto: PostDto, @Param() userId: string,
+                    @Param() subjectId: string, @UploadedFiles() files) {
+    await this.postService.publishPost(postDto, userId, subjectId);
   }
 
   @Get()
-  async findAll(): Promise<schema.Post[]> {
-    return this.postService.findAll();
+  async findAllProductsBySubjectTitle(@Param() subjectDto: SubjectDto): Promise<schema.Post[]> {
+    return await this.postService.findAllPostsBySubjectTitleRegExp(subjectDto);
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<schema.Post> {
-    return this.postService.findOneById(id);
+  @Get(':userId')
+  async findAll(@Param('userId') userId: string): Promise<schema.Post[]> {
+    return await this.postService.findAllPostsByUserId(userId);
   }
 
-  @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.postService.delete(id);
-  }
+  // @Get(':id')
+  // async findOne(@Param('id') id: string): Promise<schema.Post> {
+  //   return this.postService.findOneById(id);
+  // }
+  //
+  // @Delete(':id')
+  // async delete(@Param('id') id: string) {
+  //   return this.postService.delete(id);
+  // }
 }

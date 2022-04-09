@@ -1,30 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { Subject, SubjectDocument } from "../model/subject.model";
-import { SubjectDto } from "../dto/subject.dto";
+import {Injectable} from '@nestjs/common';
+import {SubjectRepository} from "../repository/subject.repository";
+import {InjectConnection} from "@nestjs/mongoose";
+import mongoose from "mongoose";
 
 @Injectable()
 export class SubjectService {
 
-    constructor(@InjectModel(Subject.name) private readonly subjectModel: Model<SubjectDocument>,) {}
-
-    async create(subjectDto: SubjectDto): Promise<Subject> {
-        const subject = new this.subjectModel(subjectDto);
-        subject.id = subject._id;
-
-        return subject.save();
-    }
-
-    async findAll(): Promise<Subject[]> {
-        return this.subjectModel.find().exec();
-    }
-
-    async findOneById(id: Types.ObjectId): Promise<Subject> {
-        return this.subjectModel.findOne({ _id: id }).exec();
-    }
-
-    async delete(id: Types.ObjectId) {
-        return await this.subjectModel.findOneAndRemove({ _id: id }).exec();
-    }
+    constructor(@InjectConnection() private readonly connection: mongoose.Connection,
+                private readonly subjectRepository: SubjectRepository,) {}
 }

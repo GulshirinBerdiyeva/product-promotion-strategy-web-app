@@ -1,41 +1,33 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { User, UserDocument } from '../model/user.model';
-import { UserDto } from '../dto/user.dto';
-import { getHash } from "../util/dataEncryption.util";
+import {Injectable} from '@nestjs/common';
+import {UserRepository} from "../repository/user.repository";
+import {InjectConnection} from "@nestjs/mongoose";
+import mongoose from "mongoose";
+import {UserUtil} from "../util/user.util";
+import {UserDto} from "../dto/request/user.dto";
+import {User} from "../model/user.model";
 
 @Injectable()
 export class UserService {
 
-  constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>,) {}
+  constructor(@InjectConnection() private readonly connection: mongoose.Connection,
+              private readonly userRepository: UserRepository,
+              private readonly userUtil: UserUtil,) {}
 
-  async create(userDto: UserDto): Promise<User> {
-    userDto.password = await getHash(userDto.password);
+    async editUser(id: string, userDto: UserDto) {
+        const transactionSession = await this.connection.startSession();
+        transactionSession.startTransaction();
 
-    const user = new this.userModel(userDto);
-    user.id = user._id;
+        await this.userUtil.getUserById(id).then((user) => {
+            this.userUtil.editUser(user, userDto).then((editedUser) => {
 
-    return user.save();
-  }
+                this.userUtil.setUserRole(userDto);
+                this.userRepository.save(editedUser);
+                transactionSession.commitTransaction();
+            });
+      });
+    }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
-  }
-
-  async findOneById(id: Types.ObjectId): Promise<User> {
-    return this.userModel.findOne({ _id: id }).exec();
-  }
-
-  async findOneByName(username: string): Promise<User> {
-    return this.userModel.findOne({username: username}).exec();
-  }
-
-  async delete(id: Types.ObjectId) {
-    return await this.userModel.findOneAndRemove({ _id: id }).exec();
-  }
-
-  async updateRefreshTokenByID(userId: Types.ObjectId, refreshTokenHash: string) {
-    return await this.userModel.updateOne({_id: userId}, {$set: {refreshTokenHash: refreshTokenHash}}).exec();
-  }
+    async findAll(): Promise<User[]> {
+      return await this.userRepository.findAll();
+    }
 }

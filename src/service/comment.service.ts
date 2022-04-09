@@ -1,30 +1,51 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { Comment, CommentDocument } from "../model/comment.model";
-import { CommentDto } from "../dto/comment.dto";
+import {Injectable} from '@nestjs/common';
+import {CommentRepository} from "../repository/comment.repository";
+import {InjectConnection} from "@nestjs/mongoose";
+import mongoose from "mongoose";
+import {CommentDto} from "../dto/request/comment.dto";
+import {UserUtil} from "../util/user.util";
+import {PostUtil} from "../util/post.util";
+import {CommentReplyDto} from "../dto/request/comment.reply.dto";
+import {CommentUtil} from "../util/comment.util";
 
 @Injectable()
 export class CommentService {
 
-    constructor(@InjectModel(Comment.name) private readonly commentModel: Model<CommentDocument>,) {}
+    constructor(@InjectConnection() private readonly connection: mongoose.Connection,
+                private readonly commentRepository: CommentRepository,
+                private readonly commentUtil: CommentUtil,
+                private readonly userUtil: UserUtil,
+                private readonly postUtil: PostUtil,) {}
 
-    async create(commentDto: CommentDto): Promise<Comment> {
-        const comment = new this.commentModel(commentDto);
-        comment.id = comment._id;
+    async createComment(commentDto: CommentDto) {
+        const transactionSession = await this.connection.startSession();
+        transactionSession.startTransaction();
 
-        return comment.save();
+        this.userUtil.getUserById(commentDto.userId.toString()).then((user) => {
+            this.postUtil.getPostById(commentDto.postId.toString()).then((post) => {
+
+                this.commentRepository.save(commentDto);
+                transactionSession.commitTransaction();
+            });
+        });
     }
 
-    async findAll(): Promise<Comment[]> {
-        return this.commentModel.find().exec();
-    }
+    async replyOnComment(commentReplyDto: CommentReplyDto) {
+        const transactionSession = await this.connection.startSession();
+        transactionSession.startTransaction();
 
-    async findOneById(id: Types.ObjectId): Promise<Comment> {
-        return this.commentModel.findOne({ _id: id }).exec();
-    }
+        this.userUtil.getUserById(commentReplyDto.repliedAuthorId.toString()).then((repliedAuthor) => {
+            this.userUtil.getUserById(commentReplyDto.authorId.toString()).then((author) => {
+                this.postUtil.getPostById(commentReplyDto.postId.toString()).then((post) => {
+                    this.commentUtil.getCommentById(commentReplyDto.commentId.toString()).then((comment) => {
 
-    async delete(id: Types.ObjectId) {
-        return await this.commentModel.findOneAndRemove({ _id: id }).exec();
+                        this.commentUtil.fillComment(commentReplyDto).then((comment) => {
+                            this.commentRepository.save(comment);
+                            transactionSession.commitTransaction();
+                        });
+                    });
+                });
+            });
+        });
     }
 }

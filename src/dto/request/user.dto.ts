@@ -1,5 +1,5 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsNumber, Length, MaxLength, Min } from 'class-validator';
-import { UserRole } from '../model/type/userRole.type';
+import {IsEmail, IsEnum, IsNotEmpty, IsNumber, Length, MaxLength, Min} from 'class-validator';
+import {UserRole} from '../../model/type/userRole.type';
 
 export class UserDto {
 
@@ -23,10 +23,10 @@ export class UserDto {
   @Length(5, 10)
   password: string;
 
-  refreshTokenHash: string;
+  refreshToken: string;
 
   @IsEnum(UserRole)
-  readonly role: string;
+  role: string;
 
   @IsEmail()
   readonly email: string;

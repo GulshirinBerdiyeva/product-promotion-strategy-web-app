@@ -1,5 +1,5 @@
-import { IsBoolean, IsMongoId } from 'class-validator';
-import { Types } from 'mongoose';
+import {IsBoolean, IsMongoId} from 'class-validator';
+import {Types} from 'mongoose';
 
 export class LikesDto {
 

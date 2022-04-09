@@ -1,13 +1,18 @@
-import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
-import { Subject, SubjectModel } from "../model/subject.model";
-import { SubjectService } from "../service/subject.service";
-import { SubjectController } from "../controller/subject.controller";
+import {Module} from "@nestjs/common";
+import {MongooseModule} from "@nestjs/mongoose";
+import {Subject, SubjectModel} from "../model/subject.model";
+import {SubjectService} from "../service/subject.service";
+import {SubjectController} from "../controller/subject.controller";
+import {SubjectRepository} from "../repository/subject.repository";
+import {AppLogger} from "../aop/app.logger";
+import {SubjectUtil} from "../util/subject.util";
 
 @Module ({
-    imports: [MongooseModule.forFeature([{name: Subject.name, schema: SubjectModel }])
+    imports: [
+        MongooseModule.forFeature([{name: Subject.name, schema: SubjectModel }])
     ],
     controllers: [SubjectController],
-    providers: [SubjectService],
+    providers: [SubjectRepository, SubjectService, SubjectUtil, AppLogger],
+    exports: [SubjectRepository, SubjectUtil],
 })
 export class SubjectModule{}

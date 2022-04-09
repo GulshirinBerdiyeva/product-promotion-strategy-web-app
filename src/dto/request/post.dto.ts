@@ -1,5 +1,5 @@
-import { IsDate, IsMongoId, IsNotEmpty, MaxLength } from 'class-validator';
-import { Types } from 'mongoose';
+import {IsDate, IsMongoId, IsNotEmpty, MaxLength} from 'class-validator';
+import {Types} from 'mongoose';
 
 export class PostDto {
 
@@ -11,14 +11,14 @@ export class PostDto {
   readonly description: string;
 
   @IsNotEmpty()
-  readonly photoFileName: string;
+  readonly photoFileName: string[];
 
   @IsDate()
   readonly date: Date;
 
   @IsMongoId()
-  readonly userId: Types.ObjectId;
+  userId: Types.ObjectId;
 
   @IsMongoId()
-  readonly subjectId: Types.ObjectId;
+  subjectId: Types.ObjectId;
 }

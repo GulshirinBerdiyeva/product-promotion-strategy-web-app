@@ -1,6 +1,6 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
-import { UserRole } from './type/userRole.type';
+import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
+import {Document, Types} from 'mongoose';
+import {UserRole} from './type/userRole.type';
 
 export type UserDocument = User & Document;
 
@@ -29,7 +29,7 @@ export class User {
   password: string;
 
   @Prop()
-  refreshTokenHash: string;
+  refreshToken: string;
 
   @Prop({
     required: true,

@@ -1,30 +1,29 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { Likes, LikesDocument } from "../model/likes.model";
-import { LikesDto } from "../dto/likes.dto";
+import {Injectable} from '@nestjs/common';
+import {LikesRepository} from "../repository/likes.repository";
+import {LikesDto} from "../dto/request/likes.dto";
+import {UserUtil} from "../util/user.util";
+import {PostUtil} from "../util/post.util";
+import {InjectConnection} from "@nestjs/mongoose";
+import mongoose from "mongoose";
 
 @Injectable()
 export class LikesService {
 
-    constructor(@InjectModel(Likes.name) private readonly likesModel: Model<LikesDocument>,) {}
+    constructor(@InjectConnection() private readonly connection: mongoose.Connection,
+                private readonly likesRepository: LikesRepository,
+                private readonly userUtil: UserUtil,
+                private readonly postUtil: PostUtil,) {}
 
-    async create(likesDto: LikesDto): Promise<Likes> {
-        const like = new this.likesModel(likesDto);
-        like.id = like._id;
+    async createLike(likesDto: LikesDto) {
+        const transactionSession = await this.connection.startSession();
+        transactionSession.startTransaction();
 
-        return like.save();
-    }
+        this.userUtil.getUserById(likesDto.userId.toString()).then((user) => {
+            this.postUtil.getPostById(likesDto.postId.toString()).then((post) => {
 
-    async findAll(): Promise<Likes[]> {
-        return this.likesModel.find().exec();
-    }
-
-    async findOneById(id: Types.ObjectId): Promise<Likes> {
-        return this.likesModel.findOne({ _id: id }).exec();
-    }
-
-    async delete(id: Types.ObjectId) {
-        return await this.likesModel.findOneAndRemove({ _id: id }).exec();
+                this.likesRepository.save(likesDto);
+                transactionSession.commitTransaction();
+            });
+        });
     }
 }
