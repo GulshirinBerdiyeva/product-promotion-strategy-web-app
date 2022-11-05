@@ -12,11 +12,11 @@ import * as mongoose from "mongoose";
 
 @Injectable()
 export class AuthService {
-
     constructor(@InjectConnection() private readonly connection: mongoose.Connection,
                 private readonly userRepository: UserRepository,
                 private readonly userUtil: UserUtil,
-                private readonly jwtService: JwtService) {}
+                private readonly jwtService: JwtService) {
+    }
 
     async signUp(userDto: UserDto): Promise<Token> {
         const transactionSession = await this.connection.startSession();

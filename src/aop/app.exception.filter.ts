@@ -3,8 +3,8 @@ import {AppLogger} from "./app.logger";
 
 @Catch()
 export class AppExceptionFilter implements ExceptionFilter {
-
-    constructor(private readonly logger: AppLogger) {}
+    constructor(private readonly logger: AppLogger) {
+    }
 
     catch(exception: Error, host: ArgumentsHost): any {
         const ctx = host.switchToHttp();
@@ -12,7 +12,7 @@ export class AppExceptionFilter implements ExceptionFilter {
         const response = ctx.getResponse();
 
         const statusCode = exception instanceof HttpException ? exception.getStatus() : HttpStatus.BAD_REQUEST;
-        const message = exception instanceof HttpException ?  exception.message : 'Internal server error';
+        const message = exception instanceof HttpException ? exception.message : 'Bad request exception';
 
         const devErrorResponse: any = {
             statusCode,
@@ -28,8 +28,8 @@ export class AppExceptionFilter implements ExceptionFilter {
             message
         };
 
-        this.logger.error( `request method: ${request.method} request url${request.url}`, JSON.stringify(devErrorResponse));
+        this.logger.error(`request method: ${request.method} request url${request.url}`, JSON.stringify(devErrorResponse));
 
-        response.status(statusCode).json( process.env.NODE_ENV === 'development' ? devErrorResponse: prodErrorResponse);
+        response.status(statusCode).json(process.env.NODE_ENV === 'development' ? devErrorResponse : prodErrorResponse);
     }
 }

@@ -8,11 +8,12 @@ import {UserUtil} from "../util/user.util";
 import {AppLogger} from "../aop/app.logger";
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserModel }]),
-  ],
-  controllers: [UserController],
-  providers: [UserRepository, UserService, UserUtil, AppLogger],
-  exports: [UserRepository, UserUtil]
+    imports: [
+        MongooseModule.forFeature([{name: User.name, schema: UserModel}]),
+    ],
+    controllers: [UserController],
+    providers: [UserRepository, UserService, UserUtil, AppLogger],
+    exports: [UserRepository, UserUtil]
 })
-export class UserModule {}
+export class UserModule {
+}

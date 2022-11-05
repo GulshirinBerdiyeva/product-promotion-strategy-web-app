@@ -1,12 +1,11 @@
-import {Body, Controller, Delete, Get, Param, Post} from '@nestjs/common';
+import {Body, Controller, Post} from '@nestjs/common';
 import {LikesService} from "../service/likes.service";
-import {Likes} from "../model/likes.model";
 import {LikesDto} from "../dto/request/likes.dto";
 
 @Controller('likes')
 export class LikesController {
-
-    constructor(private readonly likesService: LikesService) {}
+    constructor(private readonly likesService: LikesService) {
+    }
 
     @Post()
     async createLike(@Body() likesDto: LikesDto) {

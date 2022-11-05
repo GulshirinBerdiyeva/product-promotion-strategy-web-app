@@ -7,19 +7,19 @@ import {Public} from "../decorator/public.decorator";
 import {RefreshTokenGuard} from "../guard/refreshToken.guard";
 import {GetCurrentUser} from "../decorator/getCurrentUser.decorator";
 
-@Controller('auth')
+@Controller('api/v1/auth')
 export class AuthController {
-
-    constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthService) {
+    }
 
     @Public()
-    @Post('/signUp')
+    @Post('/sign-up')
     async signUp(@Body() userDto: UserDto): Promise<Token> {
         return this.authService.signUp(userDto);
     }
 
     @Public()
-    @Post('/signIn')
+    @Post('/sign-in')
     async signIn(@Body() userDto: UserDto): Promise<Token> {
         return this.authService.signIn(userDto);
     }

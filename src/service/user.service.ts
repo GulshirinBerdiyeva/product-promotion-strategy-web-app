@@ -8,10 +8,10 @@ import {User} from "../model/user.model";
 
 @Injectable()
 export class UserService {
-
-  constructor(@InjectConnection() private readonly connection: mongoose.Connection,
-              private readonly userRepository: UserRepository,
-              private readonly userUtil: UserUtil,) {}
+    constructor(@InjectConnection() private readonly connection: mongoose.Connection,
+                private readonly userRepository: UserRepository,
+                private readonly userUtil: UserUtil,) {
+    }
 
     async editUser(id: string, userDto: UserDto) {
         const transactionSession = await this.connection.startSession();
@@ -24,10 +24,10 @@ export class UserService {
                 this.userRepository.save(editedUser);
                 transactionSession.commitTransaction();
             });
-      });
+        });
     }
 
     async findAll(): Promise<User[]> {
-      return await this.userRepository.findAll();
+        return await this.userRepository.findAll();
     }
 }

@@ -12,25 +12,26 @@ import {AppExceptionFilter} from "../aop/app.exception.filter";
 import {AppLogger} from "../aop/app.logger";
 
 @Module({
-  imports: [
-    DbModule,
-    AuthModule,
-    UserModule,
-    PostModule,
-    CommentModule,
-    SubjectModule,
-    LikesModule
-  ],
-  providers: [
-      AppLogger,
-    {
-      provide: APP_GUARD,
-      useClass: RefreshTokenGuard
-    },
-    {
-      provide: APP_FILTER,
-      useClass: AppExceptionFilter
-    }
-  ]
+    imports: [
+        DbModule,
+        AuthModule,
+        UserModule,
+        PostModule,
+        CommentModule,
+        SubjectModule,
+        LikesModule
+    ],
+    providers: [
+        AppLogger,
+        {
+            provide: APP_GUARD,
+            useClass: RefreshTokenGuard
+        },
+        {
+            provide: APP_FILTER,
+            useClass: AppExceptionFilter
+        }
+    ]
 })
-export class AppModule {}
+export class AppModule {
+}

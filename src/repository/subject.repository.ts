@@ -6,8 +6,8 @@ import {SubjectDto} from '../dto/request/subject.dto';
 
 @Injectable()
 export class SubjectRepository {
-
-    constructor(@InjectModel(Subject.name) private readonly subjectModel: Model<SubjectDocument>,) {}
+    constructor(@InjectModel(Subject.name) private readonly subjectModel: Model<SubjectDocument>,) {
+    }
 
     async save(subjectDto: SubjectDto): Promise<Subject> {
         const subject = new this.subjectModel(subjectDto);
@@ -20,14 +20,14 @@ export class SubjectRepository {
     }
 
     async findOneById(id: string): Promise<Subject> {
-        return this.subjectModel.findOne({ _id: id }).exec();
+        return this.subjectModel.findOne({_id: id}).exec();
     }
 
     async findAllByTitleRegExp(title: string): Promise<Subject[]> {
-        return this.subjectModel.find({ title: new RegExp(title, 'i') }).exec();
+        return this.subjectModel.find({title: new RegExp(title, 'i')}).exec();
     }
 
     async delete(id: string) {
-        return await this.subjectModel.findOneAndRemove({ _id: id }).exec();
+        return await this.subjectModel.findOneAndRemove({_id: id}).exec();
     }
 }

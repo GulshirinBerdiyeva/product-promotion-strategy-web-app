@@ -5,7 +5,6 @@ export type SubjectDocument = Subject & Document;
 
 @Schema()
 export class Subject {
-
     @Prop({
         type: Types.ObjectId,
         unique: true

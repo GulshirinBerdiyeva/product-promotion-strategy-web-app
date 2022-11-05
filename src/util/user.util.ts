@@ -9,9 +9,9 @@ import {AppLogger} from "../aop/app.logger";
 
 @Injectable()
 export class UserUtil {
-
     constructor(private readonly userRepository: UserRepository,
-                private readonly logger: AppLogger) {}
+                private readonly logger: AppLogger) {
+    }
 
     async getUserById(userId: string): Promise<User> {
         return this.userRepository.findOneById(userId)
@@ -31,7 +31,7 @@ export class UserUtil {
 
             if (age <= userRoleConstants.YOUNG_ADULT) {
                 userDto.role = UserRole.YOUNG_ADULT.toString();
-            } else if(age <= userRoleConstants.MIDDLE_AGED_ADULT) {
+            } else if (age <= userRoleConstants.MIDDLE_AGED_ADULT) {
                 userDto.role = UserRole.MIDDLE_AGED_ADULT.toString();
             } else {
                 userDto.role = UserRole.OLD_AGED_ADULT.toString();
@@ -63,4 +63,4 @@ export class UserUtil {
         }
         return user;
     }
- }
+}

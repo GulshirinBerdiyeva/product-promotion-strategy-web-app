@@ -5,7 +5,7 @@ import {MulterModuleOptions, MulterOptionsFactory} from "@nestjs/platform-expres
 export class MulterPostConfig implements MulterOptionsFactory {
     createMulterOptions(): Promise<MulterModuleOptions> | MulterModuleOptions {
         return {
-            dest: './downloads/posts',
+            dest: './uploads/posts',
         };
     }
 }

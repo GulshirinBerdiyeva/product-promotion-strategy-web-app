@@ -5,9 +5,9 @@ import {Post} from "../model/post.model";
 
 @Injectable()
 export class PostUtil {
-
     constructor(private readonly postRepository: PostRepository,
-                private readonly logger: AppLogger) {}
+                private readonly logger: AppLogger) {
+    }
 
     async getPostById(postId: string): Promise<Post> {
         return this.postRepository.findOneById(postId)
@@ -16,4 +16,4 @@ export class PostUtil {
                 throw new NotFoundException(`post with id=${postId} not found`);
             });
     }
- }
+}

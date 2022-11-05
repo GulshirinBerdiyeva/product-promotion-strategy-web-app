@@ -1,13 +1,12 @@
-import {Body, Controller, Delete, Get, Param, Post} from '@nestjs/common';
+import {Body, Controller, Post} from '@nestjs/common';
 import {CommentService} from "../service/comment.service";
 import {CommentDto} from "../dto/request/comment.dto";
-import {Comment} from "../model/comment.model";
 import {CommentReplyDto} from "../dto/request/comment.reply.dto";
 
 @Controller('comments')
 export class CommentController {
-
-    constructor(private readonly commentService: CommentService) {}
+    constructor(private readonly commentService: CommentService) {
+    }
 
     @Post()
     async createComment(@Body() commentDto: CommentDto) {

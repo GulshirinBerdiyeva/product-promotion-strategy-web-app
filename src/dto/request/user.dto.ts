@@ -2,40 +2,39 @@ import {IsEmail, IsEnum, IsNotEmpty, IsNumber, Length, MaxLength, Min} from 'cla
 import {UserRole} from '../../model/type/userRole.type';
 
 export class UserDto {
+    @IsNotEmpty()
+    @MaxLength(25)
+    readonly firstName: string;
 
-  @IsNotEmpty()
-  @MaxLength(25)
-  readonly firstName: string;
+    @IsNotEmpty()
+    @MaxLength(25)
+    readonly lastName: string;
 
-  @IsNotEmpty()
-  @MaxLength(25)
-  readonly lastName: string;
+    @IsNotEmpty()
+    @MaxLength(50)
+    readonly username: string;
 
-  @IsNotEmpty()
-  @MaxLength(50)
-  readonly username: string;
+    @IsNumber()
+    @Min(0)
+    readonly age: number;
 
-  @IsNumber()
-  @Min(0)
-  readonly age: number;
+    @IsNotEmpty()
+    @Length(5, 10)
+    password: string;
 
-  @IsNotEmpty()
-  @Length(5, 10)
-  password: string;
+    refreshToken: string;
 
-  refreshToken: string;
+    @IsEnum(UserRole)
+    role: string;
 
-  @IsEnum(UserRole)
-  role: string;
+    @IsEmail()
+    readonly email: string;
 
-  @IsEmail()
-  readonly email: string;
+    readonly socialMediaUrl: string;
 
-  readonly socialMediaUrl: string;
+    @IsNumber()
+    @Min(0)
+    readonly responseCounter: number;
 
-  @IsNumber()
-  @Min(0)
-  readonly responseCounter: number;
-
-  readonly photoFileName: string;
+    readonly photoFileName: string;
 }

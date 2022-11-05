@@ -6,13 +6,16 @@ import {SubjectController} from "../controller/subject.controller";
 import {SubjectRepository} from "../repository/subject.repository";
 import {AppLogger} from "../aop/app.logger";
 import {SubjectUtil} from "../util/subject.util";
+import {UserModule} from "./user.module";
 
-@Module ({
+@Module({
     imports: [
-        MongooseModule.forFeature([{name: Subject.name, schema: SubjectModel }])
+        MongooseModule.forFeature([{name: Subject.name, schema: SubjectModel}]),
+        UserModule
     ],
     controllers: [SubjectController],
     providers: [SubjectRepository, SubjectService, SubjectUtil, AppLogger],
     exports: [SubjectRepository, SubjectUtil],
 })
-export class SubjectModule{}
+export class SubjectModule {
+}

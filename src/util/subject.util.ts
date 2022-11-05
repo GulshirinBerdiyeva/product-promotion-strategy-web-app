@@ -5,9 +5,9 @@ import {Subject} from "../model/subject.model";
 
 @Injectable()
 export class SubjectUtil {
-
     constructor(private readonly subjectRepository: SubjectRepository,
-                private readonly logger: AppLogger) {}
+                private readonly logger: AppLogger) {
+    }
 
     async getSubjectById(subjectId: string): Promise<Subject> {
         return this.subjectRepository.findOneById(subjectId)
@@ -16,4 +16,4 @@ export class SubjectUtil {
                 throw new NotFoundException(`subject with id=${subjectId} not found`);
             });
     }
- }
+}

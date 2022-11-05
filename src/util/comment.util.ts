@@ -6,9 +6,9 @@ import {CommentReplyDto} from "../dto/request/comment.reply.dto";
 
 @Injectable()
 export class CommentUtil {
-
     constructor(private readonly commentRepository: CommentRepository,
-                private readonly logger: AppLogger) {}
+                private readonly logger: AppLogger) {
+    }
 
     async getCommentById(commentId: string): Promise<Comment> {
         return this.commentRepository.findOneById(commentId)
@@ -27,4 +27,4 @@ export class CommentUtil {
         comment.isPositive = commentReplyDto.isPositive;
         return comment;
     }
- }
+}

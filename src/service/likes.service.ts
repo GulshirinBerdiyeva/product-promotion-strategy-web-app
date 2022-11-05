@@ -8,11 +8,11 @@ import mongoose from "mongoose";
 
 @Injectable()
 export class LikesService {
-
     constructor(@InjectConnection() private readonly connection: mongoose.Connection,
                 private readonly likesRepository: LikesRepository,
                 private readonly userUtil: UserUtil,
-                private readonly postUtil: PostUtil,) {}
+                private readonly postUtil: PostUtil,) {
+    }
 
     async createLike(likesDto: LikesDto) {
         const transactionSession = await this.connection.startSession();

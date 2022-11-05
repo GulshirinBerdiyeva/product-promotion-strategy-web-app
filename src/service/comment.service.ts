@@ -10,12 +10,12 @@ import {CommentUtil} from "../util/comment.util";
 
 @Injectable()
 export class CommentService {
-
     constructor(@InjectConnection() private readonly connection: mongoose.Connection,
                 private readonly commentRepository: CommentRepository,
                 private readonly commentUtil: CommentUtil,
                 private readonly userUtil: UserUtil,
-                private readonly postUtil: PostUtil,) {}
+                private readonly postUtil: PostUtil,) {
+    }
 
     async createComment(commentDto: CommentDto) {
         const transactionSession = await this.connection.startSession();

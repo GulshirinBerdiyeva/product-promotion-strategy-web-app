@@ -2,8 +2,9 @@ import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 
 @Module({
-  imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/prod-prom-statistics'),
-  ],
+    imports: [
+        MongooseModule.forRoot('mongodb://localhost:27017/prod-prom-strategy'),
+    ],
 })
-export class DbModule {}
+export class DbModule {
+}

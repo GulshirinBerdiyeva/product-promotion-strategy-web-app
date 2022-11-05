@@ -6,8 +6,8 @@ import {LikesDto} from "../dto/request/likes.dto";
 
 @Injectable()
 export class LikesRepository {
-
-    constructor(@InjectModel(Likes.name) private readonly likesModel: Model<LikesDocument>,) {}
+    constructor(@InjectModel(Likes.name) private readonly likesModel: Model<LikesDocument>,) {
+    }
 
     async save(likesDto: LikesDto): Promise<Likes> {
         const like = new this.likesModel(likesDto);
@@ -20,10 +20,10 @@ export class LikesRepository {
     }
 
     async findOneById(id: string): Promise<Likes> {
-        return this.likesModel.findOne({ _id: id }).exec();
+        return this.likesModel.findOne({_id: id}).exec();
     }
 
     async delete(id: string) {
-        return await this.likesModel.findOneAndRemove({ _id: id }).exec();
+        return await this.likesModel.findOneAndRemove({_id: id}).exec();
     }
 }

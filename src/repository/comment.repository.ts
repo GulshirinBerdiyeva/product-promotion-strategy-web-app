@@ -6,8 +6,8 @@ import {CommentDto} from "../dto/request/comment.dto";
 
 @Injectable()
 export class CommentRepository {
-
-    constructor(@InjectModel(Comment.name) private readonly commentModel: Model<CommentDocument>,) {}
+    constructor(@InjectModel(Comment.name) private readonly commentModel: Model<CommentDocument>,) {
+    }
 
     async save(commentDto: CommentDto): Promise<Comment> {
         const comment = new this.commentModel(commentDto);
@@ -20,10 +20,10 @@ export class CommentRepository {
     }
 
     async findOneById(id: string): Promise<Comment> {
-        return this.commentModel.findOne({ _id: id }).exec();
+        return this.commentModel.findOne({_id: id}).exec();
     }
 
     async delete(id: string) {
-        return await this.commentModel.findOneAndRemove({ _id: id }).exec();
+        return await this.commentModel.findOneAndRemove({_id: id}).exec();
     }
 }

@@ -10,7 +10,6 @@ const FILE_MAX_SIZE = 2;
 
 @Injectable()
 export class AppLogger extends Logger {
-
     log(message: string, trace: string) {
         const fileAbsPath = getFileAbsPath();
 
@@ -29,7 +28,7 @@ export class AppLogger extends Logger {
 }
 
 function getFileAbsPath() {
-    const files  = fs.readdirSync(DIR_PATH);
+    const files = fs.readdirSync(DIR_PATH);
     const lastFile = files.at(files.length - 1);
 
     let fileAbsPath;
