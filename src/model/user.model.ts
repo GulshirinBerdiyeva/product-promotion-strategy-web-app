@@ -22,10 +22,10 @@ export class User {
     username: string;
 
     @Prop({required: true})
-    age: number;
+    birthDate: Date;
 
     @Prop({required: true})
-    password: string;
+    passwordHash: string;
 
     @Prop()
     refreshToken: string;
@@ -37,20 +37,21 @@ export class User {
     role: string;
 
     @Prop({
-        // unique: true
+        required: true,
+        unique: true
     })
     email: string;
 
     @Prop({
-        // unique: true
+        unique: true
     })
     socialMediaUrl: string;
 
-    @Prop()
+    @Prop({default: 0})
     responseCounter: number;
 
     @Prop()
-    photoFileName: string;
+    avatarFileName: string;
 }
 
 export const UserModel = SchemaFactory.createForClass(User);

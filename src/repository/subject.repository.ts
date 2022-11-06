@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
 import {Subject, SubjectDocument} from '../model/subject.model';
-import {SubjectDto} from '../dto/request/subject.dto';
+import {SubjectDto} from '../dto/request/subject/subject.dto';
 
 @Injectable()
 export class SubjectRepository {
@@ -15,19 +15,26 @@ export class SubjectRepository {
         return subject.save();
     }
 
-    async findAll(): Promise<Subject[]> {
-        return this.subjectModel.find().exec();
+    async findAll(page: number, size: number): Promise<Subject[]> {
+        return this.subjectModel.find()
+            .skip(page)
+            .limit(size)
+            .exec();
     }
 
-    async findOneById(id: string): Promise<Subject> {
+    async findAllByTitleRegExp(title: string, page: number, size: number): Promise<Subject[]> {
+        const regExp = new RegExp(title, 'i');
+        return this.subjectModel.find({title: {$regex: regExp}})
+            .skip(page)
+            .limit(size)
+            .exec();
+    }
+
+    async findById(id: string): Promise<Subject> {
         return this.subjectModel.findOne({_id: id}).exec();
     }
 
-    async findAllByTitleRegExp(title: string): Promise<Subject[]> {
-        return this.subjectModel.find({title: new RegExp(title, 'i')}).exec();
-    }
-
-    async delete(id: string) {
-        return await this.subjectModel.findOneAndRemove({_id: id}).exec();
+    async deleteById(id: string) {
+        await this.subjectModel.findOneAndRemove({_id: id}).exec();
     }
 }

@@ -1,29 +1,37 @@
-import {Body, Controller, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Query} from '@nestjs/common';
 import {LikesService} from "../service/likes.service";
-import {LikesDto} from "../dto/request/likes.dto";
+import {LikesDto} from "../dto/request/likes/likes.dto";
+import {Likes} from "../model/likes.model";
+import {GetCurrentUserId} from "../decorator/getCurrentUserId.decorator";
+import {PagingDto} from "../dto/request/paging.dto";
 
-@Controller('likes')
+@Controller('api/v1/likes')
 export class LikesController {
     constructor(private readonly likesService: LikesService) {
     }
 
     @Post()
-    async createLike(@Body() likesDto: LikesDto) {
-        await this.likesService.createLike(likesDto);
+    @HttpCode(HttpStatus.CREATED)
+    async createLike(@GetCurrentUserId() userId: string,
+                     @Body() likesDto: LikesDto): Promise<Likes> {
+        return await this.likesService.createLike(userId, likesDto);
     }
 
-    // @Get()
-    // async findAll(): Promise<Likes[]> {
-    //     return await this.likesService.findAll();
-    // }
-    //
-    // @Get(':id')
-    // async findOne(@Param('id') id: string): Promise<Likes> {
-    //     return this.likesService.findOneById(id);
-    // }
-    //
-    // @Delete(':id')
-    // async delete(@Param('id') id: string) {
-    //     return this.likesService.delete(id);
-    // }
+    @Get()
+    @HttpCode(HttpStatus.OK)
+    async findAll(@Query() pagingDto: PagingDto): Promise<Likes[]> {
+        return await this.likesService.findAll(pagingDto.page, pagingDto.size);
+    }
+
+    @Get('/:id')
+    @HttpCode(HttpStatus.OK)
+    async findOne(@Param('id') id: string): Promise<Likes> {
+        return this.likesService.findById(id);
+    }
+
+    @Delete('/:id')
+    @HttpCode(HttpStatus.OK)
+    async delete(@Param('id') id: string) {
+        return this.likesService.deleteById(id);
+    }
 }

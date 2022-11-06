@@ -12,9 +12,6 @@ export class Post {
     id: Types.ObjectId;
 
     @Prop({required: true})
-    title: string;
-
-    @Prop({required: true})
     description: string;
 
     @Prop([String])

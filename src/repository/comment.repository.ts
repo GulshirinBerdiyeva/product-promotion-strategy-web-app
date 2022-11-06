@@ -2,28 +2,30 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
 import {Comment, CommentDocument} from "../model/comment.model";
-import {CommentDto} from "../dto/request/comment.dto";
 
 @Injectable()
 export class CommentRepository {
     constructor(@InjectModel(Comment.name) private readonly commentModel: Model<CommentDocument>,) {
     }
 
-    async save(commentDto: CommentDto): Promise<Comment> {
-        const comment = new this.commentModel(commentDto);
-        comment.id = comment._id;
-        return comment.save();
+    async save(comment: Comment): Promise<Comment> {
+        const newComment = new this.commentModel(comment);
+        newComment.id = newComment._id;
+        return newComment.save();
     }
 
-    async findAll(): Promise<Comment[]> {
-        return this.commentModel.find().exec();
+    async findAll(page: number, size: number): Promise<Comment[]> {
+        return this.commentModel.find()
+            .skip(page)
+            .limit(size)
+            .exec();
     }
 
-    async findOneById(id: string): Promise<Comment> {
+    async findById(id: string): Promise<Comment> {
         return this.commentModel.findOne({_id: id}).exec();
     }
 
-    async delete(id: string) {
+    async deleteById(id: string) {
         return await this.commentModel.findOneAndRemove({_id: id}).exec();
     }
 }

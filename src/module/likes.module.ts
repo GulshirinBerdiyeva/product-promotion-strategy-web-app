@@ -7,6 +7,7 @@ import {LikesRepository} from "../repository/likes.repository";
 import {AppLogger} from "../aop/app.logger";
 import {UserModule} from "./user.module";
 import {PostModule} from "./post.module";
+import {LikesUtil} from "../util/likes.util";
 
 @Module({
     imports: [MongooseModule.forFeature([{name: Likes.name, schema: LikesModel}]),
@@ -14,7 +15,7 @@ import {PostModule} from "./post.module";
         PostModule
     ],
     controllers: [LikesController],
-    providers: [LikesRepository, LikesService, AppLogger],
+    providers: [LikesRepository, LikesService, LikesUtil, AppLogger],
     exports: [LikesRepository],
 })
 export class LikesModule {

@@ -14,9 +14,6 @@ export class Comment {
     @Prop({required: true})
     comment: string;
 
-    @Prop()
-    isPositive: boolean;
-
     @Prop({default: Date.now()})
     date: Date;
 

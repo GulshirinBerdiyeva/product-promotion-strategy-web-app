@@ -3,13 +3,13 @@ import {Token} from "../model/type/token.type";
 import {jwtConstants} from "./jwtConstants";
 import {JwtService} from "@nestjs/jwt";
 
-export const generateTokens = async function (jwtService: JwtService, userID: Types.ObjectId,
+export const generateTokens = async function (jwtService: JwtService, userId: Types.ObjectId,
                                               username: string): Promise<Token> {
     const [accessToken, refreshToken] = await Promise.all(
         [
             jwtService.signAsync(
                 {
-                    sub: userID,
+                    sub: userId,
                     username
                 },
                 {
@@ -19,7 +19,7 @@ export const generateTokens = async function (jwtService: JwtService, userID: Ty
 
             jwtService.signAsync(
                 {
-                    sub: userID,
+                    sub: userId,
                     username
                 },
                 {
@@ -29,7 +29,7 @@ export const generateTokens = async function (jwtService: JwtService, userID: Ty
         ]);
 
     return {
-        access_token: accessToken,
-        refresh_token: refreshToken
+        accessToken: accessToken,
+        refreshToken: refreshToken
     };
 }

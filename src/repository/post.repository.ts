@@ -2,36 +2,44 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
 import {Post, PostDocument} from '../model/post.model';
-import {PostDto} from '../dto/request/post.dto';
 
 @Injectable()
 export class PostRepository {
     constructor(@InjectModel(Post.name) private readonly postModel: Model<PostDocument>,) {
     }
 
-    async save(postDto: PostDto): Promise<Post> {
-        const post = new this.postModel(postDto);
-        post.id = post._id;
-        return post.save();
+    async save(post: Post): Promise<Post> {
+        const newPost = new this.postModel(post);
+        newPost.id = newPost._id;
+        return newPost.save();
     }
 
-    async findAll(): Promise<Post[]> {
-        return this.postModel.find().exec();
+    async findAll(page: number, size: number): Promise<Post[]> {
+        return this.postModel.find()
+            .skip(page)
+            .limit(size)
+            .exec();
     }
 
-    async findOneById(id: string): Promise<Post> {
+    async findById(id: string): Promise<Post> {
         return this.postModel.findOne({_id: id}).exec();
     }
 
-    async findAllBySubjectId(subjectId: string): Promise<Post[]> {
-        return this.postModel.find({subjectId: subjectId}).exec();
+    async findAllBySubjectId(subjectId: string, page: number, size: number): Promise<Post[]> {
+        return this.postModel.find({subjectId: subjectId})
+            .skip(page)
+            .limit(size)
+            .exec();
     }
 
-    async findAllByUserId(userId: string): Promise<Post[]> {
-        return this.postModel.find({userId: userId}).exec();
+    async findAllByUserId(userId: string, page: number, size: number): Promise<Post[]> {
+        return this.postModel.find({userId: userId})
+            .skip(page)
+            .limit(size)
+            .exec();
     }
 
-    async delete(id: string) {
+    async deleteById(id: string) {
         return await this.postModel.findOneAndRemove({_id: id}).exec();
     }
 }

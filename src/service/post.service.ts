@@ -1,57 +1,58 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {PostDto} from '../dto/request/post.dto';
+import {Injectable} from '@nestjs/common';
+import {PostDto} from '../dto/request/post/post.dto';
 import {UserUtil} from "../util/user.util";
 import {SubjectUtil} from "../util/subject.util";
 import {PostRepository} from "../repository/post.repository";
 import {InjectConnection} from "@nestjs/mongoose";
 import mongoose from "mongoose";
-import {SubjectDto} from "../dto/request/subject.dto";
+import {SubjectDto} from "../dto/request/subject/subject.dto";
 import {SubjectRepository} from "../repository/subject.repository";
 import {Post} from "../model/post.model";
+import {PostUtil} from "../util/post.util";
 
 @Injectable()
 export class PostService {
     constructor(@InjectConnection() private readonly connection: mongoose.Connection,
                 private readonly userUtil: UserUtil,
                 private readonly subjectUtil: SubjectUtil,
+                private readonly postUtil: PostUtil,
                 private readonly postRepository: PostRepository,
                 private readonly subjectRepository: SubjectRepository,) {
     }
 
-    async publishPost(postDto: PostDto, userId: string, subjectId: string) {
+    async publishPost(userId: string, postDto: PostDto, files: any): Promise<Post> {
         const transactionSession = await this.connection.startSession();
         transactionSession.startTransaction();
 
-        await this.userUtil.getUserById(userId).then((user) => {
-            this.subjectUtil.getSubjectById(subjectId).then((subject) => {
-                postDto.userId = user.id;
-                postDto.subjectId = subject.id;
+        let user = await this.userUtil.findById(userId);
+        let subject = await this.subjectUtil.findById(postDto.subjectId);
 
-                this.postRepository.save(postDto);
-                transactionSession.commitTransaction();
-            });
-        });
+        const post = await this.postUtil.createPost(postDto, subject.id, user.id);
+        let newPost = this.postRepository.save(post);
+
+        transactionSession.commitTransaction();
+        return newPost;
     }
 
-    async findAllPostsBySubjectTitleRegExp(subjectDto: SubjectDto): Promise<Post[]> {
-        const transactionSession = await this.connection.startSession();
-        transactionSession.startTransaction();
-
+    async findAllBySubjectTitleRegExp(subjectDto: SubjectDto, page: number, size: number): Promise<Post[]> {
+        let subjects = await this.subjectRepository.findAllByTitleRegExp(subjectDto.title, page, size);
         let posts = [];
-        await this.subjectRepository.findAllByTitleRegExp(subjectDto.title).then((subjects) => {
-            for (let i = 0; i < subjects.length; i++) {
-                let partPosts = this.postRepository.findAllBySubjectId(subjects[i].id.toString());
-                posts.fill(partPosts);
-            }
-
-            transactionSession.commitTransaction();
-            return posts;
-        });
-
-        throw new NotFoundException(`findPostsBySubjectTitleRegExp`);
+        for (let i = 0; i < subjects.length; i++) {
+            let subjectPosts = this.postRepository.findAllBySubjectId(subjects[i].id.toString(), page, size);
+            posts.fill(subjectPosts);
+        }
+        return posts;
     }
 
-    async findAllPostsByUserId(userId: string): Promise<Post[]> {
-        return await this.postRepository.findAllByUserId(userId);
+    async findAllPostsByUserId(userId: string, page: number, size: number): Promise<Post[]> {
+        return await this.postRepository.findAllByUserId(userId, page, size);
+    }
+
+    async findById(id: string): Promise<Post> {
+        return await this.postUtil.findById(id);
+    }
+
+    async deleteById(id: string) {
+        await this.postUtil.deleteById(id);
     }
 }

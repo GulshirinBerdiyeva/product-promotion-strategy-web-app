@@ -2,11 +2,11 @@ import {Injectable} from '@nestjs/common';
 import {CommentRepository} from "../repository/comment.repository";
 import {InjectConnection} from "@nestjs/mongoose";
 import mongoose from "mongoose";
-import {CommentDto} from "../dto/request/comment.dto";
+import {CommentDto} from "../dto/request/comment/comment.dto";
 import {UserUtil} from "../util/user.util";
 import {PostUtil} from "../util/post.util";
-import {CommentReplyDto} from "../dto/request/comment.reply.dto";
 import {CommentUtil} from "../util/comment.util";
+import {Comment} from "../model/comment.model";
 
 @Injectable()
 export class CommentService {
@@ -17,35 +17,29 @@ export class CommentService {
                 private readonly postUtil: PostUtil,) {
     }
 
-    async createComment(commentDto: CommentDto) {
+    async createComment(userId: string, commentDto: CommentDto): Promise<Comment> {
         const transactionSession = await this.connection.startSession();
         transactionSession.startTransaction();
 
-        this.userUtil.getUserById(commentDto.userId.toString()).then((user) => {
-            this.postUtil.getPostById(commentDto.postId.toString()).then((post) => {
+        let user = await this.userUtil.findById(userId);
+        let post = await this.postUtil.findById(commentDto.postId.toString());
 
-                this.commentRepository.save(commentDto);
-                transactionSession.commitTransaction();
-            });
-        });
+        let comment = await this.commentUtil.createComment(user.id, commentDto);
+        let newComment = await this.commentRepository.save(comment);
+        transactionSession.commitTransaction();
+
+        return newComment;
     }
 
-    async replyOnComment(commentReplyDto: CommentReplyDto) {
-        const transactionSession = await this.connection.startSession();
-        transactionSession.startTransaction();
+    async findAll(page: number, size: number): Promise<Comment[]> {
+        return await this.commentRepository.findAll(page, size);
+    }
 
-        this.userUtil.getUserById(commentReplyDto.repliedAuthorId.toString()).then((repliedAuthor) => {
-            this.userUtil.getUserById(commentReplyDto.authorId.toString()).then((author) => {
-                this.postUtil.getPostById(commentReplyDto.postId.toString()).then((post) => {
-                    this.commentUtil.getCommentById(commentReplyDto.commentId.toString()).then((comment) => {
+    async findById(id: string): Promise<Comment> {
+        return await this.commentUtil.findById(id);
+    }
 
-                        this.commentUtil.fillComment(commentReplyDto).then((comment) => {
-                            this.commentRepository.save(comment);
-                            transactionSession.commitTransaction();
-                        });
-                    });
-                });
-            });
-        });
+    async deleteById(id: string) {
+        await this.commentUtil.deleteById(id);
     }
 }

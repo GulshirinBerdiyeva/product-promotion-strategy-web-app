@@ -6,8 +6,5 @@ export class LikesDto {
     readonly liked: boolean;
 
     @IsMongoId()
-    readonly userId: Types.ObjectId;
-
-    @IsMongoId()
     readonly postId: Types.ObjectId;
 }

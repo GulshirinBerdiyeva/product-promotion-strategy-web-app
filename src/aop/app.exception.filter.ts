@@ -1,4 +1,4 @@
-import {ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus} from "@nestjs/common";
+import {ArgumentsHost, Catch, ExceptionFilter, HttpStatus} from "@nestjs/common";
 import {AppLogger} from "./app.logger";
 
 @Catch()
@@ -6,30 +6,23 @@ export class AppExceptionFilter implements ExceptionFilter {
     constructor(private readonly logger: AppLogger) {
     }
 
-    catch(exception: Error, host: ArgumentsHost): any {
+    catch(exception: any, host: ArgumentsHost): any {
+        let message = exception.response !== undefined ? exception.response.message : exception.message;
+        let statusCode = exception.status !== undefined ? exception.status : HttpStatus.INTERNAL_SERVER_ERROR;
+
         const ctx = host.switchToHttp();
         const request = ctx.getRequest();
         const response = ctx.getResponse();
 
-        const statusCode = exception instanceof HttpException ? exception.getStatus() : HttpStatus.BAD_REQUEST;
-        const message = exception instanceof HttpException ? exception.message : 'Bad request exception';
-
-        const devErrorResponse: any = {
-            statusCode,
+        const responseBody: any = {
+            statusCode: statusCode,
+            message: message,
             timestamp: new Date().toISOString(),
-            path: request.url,
-            method: request.method,
-            errorName: exception?.name,
-            message: exception?.message
+            path: request.url
         };
 
-        const prodErrorResponse: any = {
-            statusCode,
-            message
-        };
-
-        this.logger.error(`request method: ${request.method} request url${request.url}`, JSON.stringify(devErrorResponse));
-
-        response.status(statusCode).json(process.env.NODE_ENV === 'development' ? devErrorResponse : prodErrorResponse);
+        response.status(statusCode).json(responseBody);
+        this.logger.error(`Request method: ${request.method} Request url${request.url}`, JSON.stringify(responseBody));
     }
+
 }
